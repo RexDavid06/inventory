@@ -1,0 +1,120 @@
+{% extends 'inventory/home.html' %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Inventory Dashboard</h2>
+
+    <!-- KPI Cards -->
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <h5>Total Products</h5>
+                    <h3> total_products </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <h5>Stock Value</h5>
+                    <h3>$ stock_value </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <h5>Low Stock Items</h5>
+                    <h3> low_stock_count </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body">
+                    <h5>Incoming Shipments</h5>
+                    <h3> incoming_shipments </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="mt-5">
+        <h4>Recent Activity</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in recent_activities %}
+                <tr>
+                    <td> activity.date </td>
+                    <td> activity.action </td>
+                    <td> activity.product </td>
+                    <td> activity.quantity </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No recent activity</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Charts -->
+    <div class="mt-5 row">
+        <div class="col-md-6">
+            <h5>Stock Level Trends</h5>
+            <canvas id="stockTrendChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h5>Category Distribution</h5>
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const ctx1 = document.getElementById('stockTrendChart').getContext('2d');
+    const ctx2 = document.getElementById('categoryChart').getContext('2d');
+
+    // Example placeholder data
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+                label: 'Stock Levels',
+                data: [120, 150, 100, 180, 130],
+                borderColor: 'blue',
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+
+    new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: ['Beverages', 'Snacks', 'Dairy', 'Produce'],
+            datasets: [{
+                data: [25, 45, 15, 25],
+                backgroundColor: ['red', 'green', 'blue', 'orange']
+            }]
+        }
+    });
+});
+</script>
+{% endblock %}

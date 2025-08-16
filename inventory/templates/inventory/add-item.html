@@ -1,0 +1,15 @@
+{% extends 'inventory/home.html'%}
+
+{% block title %}Add-Item {% endblock%}
+
+{% block content %}
+   <!-- Add Inventory Form -->
+        <h3 style="margin-top: 40px;">Add New Inventory Item</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-primary">Add Item</button>
+        </form>
+
+    </div>
+{% endblock %}

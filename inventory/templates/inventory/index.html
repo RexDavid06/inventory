@@ -1,0 +1,14 @@
+{% extends 'inventory/home.html'%}
+
+{% block content%}
+<div>
+    <div class='row'>
+        <div class="col-sm-11 col-md-5 mx-auto mt-5">
+            <h1 class="fw-light">Track and Manage Your Inventory</h1>
+            <p class='fw-light'>Keep track of your inventory and recieve quantity alerts for low inventory</p>
+            <div> <a class="btn btn-primary" href="{% url 'inventory:home'%}">Get Started</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

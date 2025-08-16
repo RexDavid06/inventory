@@ -1,0 +1,76 @@
+{% extends 'inventory/home.html'%}
+
+{% block title %} Reports {% endblock%}
+
+{% block content %}
+    <body>
+        <div class="container mt-4">
+            <h2 class="mb-4">Inventory Reports</h2>
+
+        <!-- Filters -->
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label>Date From</label>
+                <input type="date" name="start_date" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label>Date To</label>
+                <input type="date" name="end_date" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label>Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+
+        <!-- Report Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Quantity In</th>
+                    <th>Quantity Out</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in report_data %}
+                <tr>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.product }}</td>
+                    <td>{{ record.qty_in }}</td>
+                    <td>{{ record.qty_out }}</td>
+                    <td>{{ record.balance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Summary -->
+        <div class="mt-4">
+            <h5>Summary</h5>
+            <p>Total Inflow: {{ total_inflow }}</p>
+            <p>Total Outflow: {{ total_outflow }}</p>
+            <p>Total Stock Value: ${{ total_value }}</p>
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="mt-4">
+            <button class="btn btn-success">Export as Excel</button>
+            <button class="btn btn-danger">Export as PDF</button>
+            <button class="btn btn-secondary">Export as CSV</button>
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
