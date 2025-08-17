@@ -1,0 +1,15 @@
+    {% extends 'inventory/home.html'%}
+
+{% block title %} Delete-Item {% endblock%}
+
+{% block content %}
+     <div class="container">
+        <h2>Are you sure you want to delete? {{product.name}} </h2>
+        <form action="" method="post">
+            {% csrf_token%}
+            <button class="btn btn-danger" type="submit"> Delete</button>
+        </form>
+        <a href="{% url 'inventory:home' %}"> Cancel</a>
+     </div>
+    </div>
+{% endblock %}

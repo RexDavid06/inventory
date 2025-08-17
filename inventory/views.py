@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from .models import Product, Category
-from .forms import ProductForm
+from .forms import ProductForm, ProductEditForm
 from django.urls import reverse_lazy
+from django.views import View
 
 #Create your views here.
 class IndexView(TemplateView):
@@ -30,3 +31,39 @@ class AddItemView(CreateView):
 
 class ReportsView(TemplateView):
     template_name = 'inventory/reports.html'
+
+
+class EditItemView(View):
+    """ I intentional didn't use the built-in UpdateView here,
+      because i was trying to have the under ground logic in my bones.
+    I forgot it when thinking about it so i used methods instead """
+    
+    def get(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        edit_form = ProductEditForm(instance=product)
+        context = {
+            "form": edit_form,
+            "product": product
+        }
+        return render(request, 'inventory/edit-item.html', context)
+    
+    def post(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        edit_form = ProductEditForm(request.POST, instance=product)
+        if edit_form.is_valid():
+            edit_form.save()
+            return redirect("inventory:home")
+    
+
+class DeleteItemView(View):
+        def get(self, request, pk):
+            product = Product.objects.get(pk=pk)
+            return render(request, "inventory/delete-item.html", {"product": product})
+        
+        def post(self, request, pk):
+            product = Product.objects.get(pk=pk)
+            product.delete()
+            return redirect("inventory:home")
+        
+        
+    
