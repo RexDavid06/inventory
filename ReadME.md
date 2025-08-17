@@ -45,7 +45,7 @@ Inventory_Logistics/
 
 Clone the repository
 
-git clone https://github.com/your-username/inventory.git
+git clone https://github.com/RexDavid06/inventory.git
 cd inventory
 
 
