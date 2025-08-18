@@ -1,4 +1,4 @@
-{% extends 'inventory/base.html' %}
+{% extends 'inventory/home.html' %}
 {% load crispy_forms_tags%}
 
 {% block content %}
@@ -25,6 +25,6 @@
     {{ form|crispy }}
     <button class="btn btn-primary" type='submit'>SignUp</button>
 </form>
-        
+ Already a registered User? <a href="{% url 'authsys:signin'%}">SignIn</a>
 
 {% endblock content %}

@@ -1,2 +1,5 @@
 Django>=5.0,<6.0
 djangorestframework>=3.14.0,<4.0
+psycopg2-binary
+django-crispy-forms
+crispy-bootstrap5

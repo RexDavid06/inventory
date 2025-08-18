@@ -18,6 +18,7 @@
         <div class="logo">
             <h2><a href="{% url 'inventory:home'%}">Inventory System</a></h2>
         </div>
+        {% if request.user.is_authenticated%}
         <div class="nav-links">
             <a href="">Welcome {{request.user}}</a>
             <a href="{% url 'inventory:dashboard'%}">Dashboard</a>
@@ -25,6 +26,13 @@
             <a href="{% url 'inventory:reports'%}">Reports</a>
             <a href="{% url 'authsys:signout'%}">Logout</a>
         </div>
+        {% else %}
+        <div class="nav-links">
+            <a href="{% url 'authsys:signup'%}">SignUp</a>
+            <a href="{% url 'authsys:signin'%}">Login In</a>
+        </div>
+        </div>
+        {% endif %}
     </nav>
     {% block content %}
 

@@ -16,6 +16,4 @@ class SignInView(LoginView):
     form_class = SignInForm
 
 
-class SignOutView(LogoutView):
-    next_page = 'authsys:signout'
 
