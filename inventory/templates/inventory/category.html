@@ -1,0 +1,14 @@
+{% extends 'inventory/home.html'%}
+
+{% block title %}New Category {% endblock%}
+
+{% block content %}
+   <!-- Add Inventory Form -->
+        <h3 style="margin-top: 40px;">Add New Category</h3>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-primary">Create Catgory</button>
+        </form>
+    </div>
+{% endblock %}

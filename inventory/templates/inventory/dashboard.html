@@ -12,7 +12,7 @@
             <div class="card kpi-card">
                 <div class="card-body">
                     <h5>Total Products</h5>
-                    <h3> total_products </h3>
+                    <h3> {{total_products}}</h3>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
             <div class="card kpi-card">
                 <div class="card-body">
                     <h5>Stock Value</h5>
-                    <h3>$ stock_value </h3>
+                    <h3>$ {{total_stock_value}} </h3>
                 </div>
             </div>
         </div>
@@ -55,18 +55,18 @@
                 </tr>
             </thead>
             <tbody>
-                {% for activity in recent_activities %}
+               
                 <tr>
                     <td> activity.date </td>
                     <td> activity.action </td>
                     <td> activity.product </td>
                     <td> activity.quantity </td>
                 </tr>
-                {% empty %}
+                
                 <tr>
                     <td colspan="4" class="text-center">No recent activity</td>
                 </tr>
-                {% endfor %}
+               
             </tbody>
         </table>
     </div>

@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from .models import Product, Category
-from .forms import ProductForm, ProductEditForm
+from .forms import ProductForm, ProductEditForm, CategoryForm
 from django.urls import reverse_lazy
 from django.views import View
 
@@ -18,8 +18,17 @@ class HomeView(ListView):
     context_object_name = 'products'
 
 
-class DashboardView(TemplateView):
-    template_name = 'inventory/dashboard.html'
+class DashboardView(View):
+    def get(self, request):
+        total_products = Product.total_products
+        total_stock_value = Product.total_stock_value
+        context = {
+            "total_products": total_products,
+            "total_stock_value": total_stock_value,
+        }
+        return render(request, 'inventory/dashboard.html', context)
+    
+
 
 
 class AddItemView(CreateView):
@@ -65,5 +74,9 @@ class DeleteItemView(View):
             product.delete()
             return redirect("inventory:home")
         
-        
-    
+
+class CategoryView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'inventory/category.html'
+    success_url = reverse_lazy('inventory:add-item')    

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum, F
 
 # Create your models here.
 class Category(models.Model):
@@ -12,6 +13,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 class Product(models.Model):
@@ -28,10 +30,25 @@ class Product(models.Model):
         ordering = ['-created_at']
 
     def total_value(self):
+        """gets the total stock value of a particular product"""
         return self.unit_price * self.quantity_in_stock
+    
+    @classmethod
+    def total_products(cls):
+        """gets the total number of products in the business"""
+        return cls.objects.count()
+    
+    @classmethod
+    def total_stock_value(cls):
+        """gets the total stock value of the total products in business"""
+        result = cls.objects.aggregate(
+            total_value = Sum(F("unit_price") * F("quantity_in_stock"))
+        )
+        return result["total_value"] or 0
 
     def __str__(self):
         return self.name
+
 
 
 class StockIn(models.Model):
