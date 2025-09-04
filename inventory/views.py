@@ -7,6 +7,7 @@ from .forms import ProductForm, ProductEditForm, CategoryForm
 from django.urls import reverse_lazy
 from django.views import View
 from django.db.models import Sum, Case, When, F
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 #Create your views here.
@@ -14,13 +15,16 @@ class IndexView(TemplateView):
     template_name = "inventory/index.html"
 
 
-class HomeView(ListView):
+class HomeView(LoginRequiredMixin, ListView):
     queryset = Product.objects.all()
     template_name = 'inventory/home.html'
     context_object_name = 'products'
+    login_url = reverse_lazy('authsys:signin')
 
 
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('authsys:signin')
+
     def get(self, request):
         total_products = Product.total_products
         total_stock_value = Product.total_stock_value
@@ -32,25 +36,17 @@ class DashboardView(View):
     
 
 
-class AddItemView(CreateView):
+class AddItemView(LoginRequiredMixin, CreateView):
     model = Product
     template_name = 'inventory/add-item.html'
     form_class = ProductForm
     success_url = reverse_lazy('inventory:home')
+    login_url = reverse_lazy('authsys:signin')
 
 
-from django.views.generic import TemplateView
-from django.db.models import Sum, F
-from .models import Transaction, Product
-
-
-from django.views.generic import TemplateView
-from django.db.models import Sum, F
-from .models import Product, Transaction
-
-
-class ReportsView(TemplateView):
+class ReportsView(LoginRequiredMixin, TemplateView):
     template_name = "inventory/reports.html"
+    login_url = reverse_lazy('authsys:signin')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,7 +100,9 @@ class ReportsView(TemplateView):
 
 
 
-class EditItemView(View):
+class EditItemView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('authsys:signin')
+
     """ I intentional didn't use the built-in UpdateView here,
       because i was trying to have the under ground logic in my bones.
     I forgot it when thinking about it so i used methods instead """
@@ -126,7 +124,9 @@ class EditItemView(View):
             return redirect("inventory:home")
     
 
-class DeleteItemView(View):
+class DeleteItemView(LoginRequiredMixin, View):
+        login_url = reverse_lazy('authsys:signin')
+
         def get(self, request, pk):
             product = Product.objects.get(pk=pk)
             return render(request, "inventory/delete-item.html", {"product": product})
@@ -137,9 +137,10 @@ class DeleteItemView(View):
             return redirect("inventory:home")
         
 
-class CategoryView(CreateView):
+class CategoryView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'inventory/category.html'
-    success_url = reverse_lazy('inventory:add-item')    
+    success_url = reverse_lazy('inventory:add-item') 
+    login_url = reverse_lazy('authsys:signin')   
 
