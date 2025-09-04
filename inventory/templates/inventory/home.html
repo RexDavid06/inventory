@@ -20,11 +20,11 @@
         </div>
         {% if request.user.is_authenticated%}
         <div class="nav-links">
-            <a href="">Welcome {{request.user}}</a>
+            <a href="">Welcome {{request.user.username}}</a>
             <a href="{% url 'inventory:dashboard'%}">Dashboard</a>
             <a href="{% url 'inventory:add-item'%}">Add Item</a>
             <a href="{% url 'inventory:reports'%}">Reports</a>
-            <a href="{% url 'authsys:signout'%}">Logout</a>
+           <form method="post" action="{% url 'authsys:signout' %}" style="display:inline;"> {% csrf_token %} <button type="submit" style="background:none; border:none; color:#007bff; cursor:pointer; text-decoration:underline;"> Logout </button> </form>
         </div>
         {% else %}
         <div class="nav-links">

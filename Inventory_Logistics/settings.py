@@ -83,7 +83,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'inventory',
-        'USER': 'inventoryUser',
+        'USER': 'postgres',
         'PASSWORD': 'inventory12345',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -137,3 +137,6 @@ LOGIN_REDIRECT_URL = 'inventory:home'
 CRISPY_ALLOW_TEMPLATE_PACKS = 'bootstrap5'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+
+AUTH_USER_MODEL = "authsys.User"

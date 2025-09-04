@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
-from .models import Product, Category
+from .models import Product, Category, Transaction
 from .forms import ProductForm, ProductEditForm, CategoryForm
 from django.urls import reverse_lazy
 from django.views import View
+from django.db.models import Sum, Case, When, F
+
 
 #Create your views here.
 class IndexView(TemplateView):
@@ -30,7 +32,6 @@ class DashboardView(View):
     
 
 
-
 class AddItemView(CreateView):
     model = Product
     template_name = 'inventory/add-item.html'
@@ -38,8 +39,69 @@ class AddItemView(CreateView):
     success_url = reverse_lazy('inventory:home')
 
 
+from django.views.generic import TemplateView
+from django.db.models import Sum, F
+from .models import Transaction, Product
+
+
+from django.views.generic import TemplateView
+from django.db.models import Sum, F
+from .models import Product, Transaction
+
+
 class ReportsView(TemplateView):
-    template_name = 'inventory/reports.html'
+    template_name = "inventory/reports.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        transactions = Transaction.objects.select_related("product").all().order_by("-date")
+
+        report_data = []
+        balance = {}
+
+        for trx in transactions:
+            product = trx.product
+
+            # Initialize product balance if not set
+            if product not in balance:
+                balance[product] = 0
+
+            # Adjust running balance correctly
+            if trx.transaction_type == "IN":
+                balance[product] += trx.quantity
+            elif trx.transaction_type == "OUT":
+                balance[product] -= trx.quantity
+
+            report_data.append({
+                "date": trx.date,
+                "product": product.name,
+                "qty_in": trx.quantity if trx.transaction_type == "IN" else 0,
+                "qty_out": trx.quantity if trx.transaction_type == "OUT" else 0,
+                "balance": balance[product]
+            })
+
+
+        # Totals across all products
+        total_inflow = Transaction.objects.filter(transaction_type="IN").aggregate(total=Sum("quantity"))["total"] or 0
+        total_outflow = Transaction.objects.filter(transaction_type="OUT").aggregate(total=Sum("quantity"))["total"] or 0
+
+        # Dynamically compute stock value from transactions
+        total_value = 0
+        for product in Product.objects.all():
+            inflow = Transaction.objects.filter(product=product, transaction_type="IN").aggregate(total=Sum("quantity"))["total"] or 0
+            outflow = Transaction.objects.filter(product=product, transaction_type="OUT").aggregate(total=Sum("quantity"))["total"] or 0
+            stock_balance = inflow - outflow
+            total_value += stock_balance * (product.unit_price or 0)
+
+        # Add to context
+        context["records"] = report_data
+        context["total_inflow"] = total_inflow
+        context["total_outflow"] = total_outflow
+        context["total_value"] = total_value
+
+        return context
+
 
 
 class EditItemView(View):
@@ -80,3 +142,4 @@ class CategoryView(CreateView):
     form_class = CategoryForm
     template_name = 'inventory/category.html'
     success_url = reverse_lazy('inventory:add-item')    
+

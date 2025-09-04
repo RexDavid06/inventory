@@ -1,24 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import User as DefaultUser
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
+
+class User(AbstractUser):
     ROLES = (
         ("sales", "Sales Representative"),
         ("driver", "Driver"),
         ("inventory", "Inventory Staff"),
         ("inventory manager", "Inventory Manager"),
-        ("logistics manager", "Logistics Manager" ),
-        ("sale manager", "Sales Manager",)
+        ("logistics manager", "Logistics Manager"),
+        ("sales manager", "Sales Manager"),
     )
-    user = models.OneToOneField(DefaultUser, on_delete=models.CASCADE)
-    role = models.CharField(max_length=30, choices=ROLES)
+
+    role = models.CharField(max_length=30, choices=ROLES, blank=True, null=True)
     email = models.EmailField(unique=True)
 
     USERNAME_FIELD = 'email'
-   
-    
+    REQUIRED_FIELDS = ['username']  # still required when using AbstractUser
+
     def __str__(self):
-        return self.role
-    
+        return f"{self.email} ({self.role})"
+
     
